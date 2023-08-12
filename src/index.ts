@@ -1,18 +1,17 @@
 import express from 'express'
-import diaryRouter from './routes/diaries'
-import bodyParser from 'body-parser'
+import indexRouter from './routes/index'
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
+import './db'
+export const domainBroker = 'prueba.blipconnection.com:18084'
+export const receiveTopic = 'iotab/trackergps/+/sdata'
 const app = express()
-app.use(express.json())
+
 const PORT = 3001
 
-app.use('/api/diaries', diaryRouter)
-
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
-app.use(bodyParser.json({ limit: '50mb' }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+app.use(express.json({ limit: '50mb' }))
 app.use(cookieParser())
-app.use(morgan('dev'))
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*') // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -21,7 +20,8 @@ app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
   next()
 })
-
+app.use(morgan('dev'))
+app.use('/', indexRouter)
 app.listen(PORT, () => {
   console.log(`app listening on ${PORT}`)
 })
