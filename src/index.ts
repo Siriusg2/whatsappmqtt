@@ -1,7 +1,8 @@
 import express from 'express'
 import diaryRouter from './routes/diaries'
 import bodyParser from 'body-parser'
-
+import cookieParser from 'cookie-parser'
+import morgan from 'morgan'
 const app = express()
 app.use(express.json())
 const PORT = 3001
@@ -10,6 +11,8 @@ app.use('/api/diaries', diaryRouter)
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
 app.use(bodyParser.json({ limit: '50mb' }))
+app.use(cookieParser())
+app.use(morgan('dev'))
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*') // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'true')
